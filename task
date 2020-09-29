@@ -1,0 +1,58 @@
+Task description
+----------------
+
+**Game**
+The goal is to make a high low card poker game. Your goal is to guess if the next card is higher or lower than the previous card.
+
+At the start of the game, one card is shown on the board. The player will now put his bet and will choose if the next card is higher or lower than the one on the board.
+There is always a basic bet in the game which is at the start of the game 10 coins or the value of the previous bet. Once the player clicks on the higher or lower button, the game will play.
+
+If there is a match, the current card will move to the side and a new card will be displayed and the player will get additional points added to his game coins. Now he can again set a new bet and decide if the next card will be higher or lower.
+
+If there is not a match, player will lose all bet coins and the game will reset and start from the beginning (except player coins will stay at new number, they will not reset to 100 coins)
+
+
+**Elements**
+Cardboard and interface
+
+Imagine the game split into cardboard and interface. The cardboard will have previous cards, already guessed visible, last guessed card, and the next card is put so you cannot see it’s number/sign. (card back is visible). 
+
+The interface can be mixed with the game board or can be outside of it.
+
+The new game will start with 100 coins.
+
+Build the game view itself using canvas (the area where cards are shown)
+Build a game interface using react/redux.
+
+Additional help (rules): https://www.youtube.com/watch?v=QjmZLYtumaI 
+
+
+**The game view should contain**
+- Open cards and the mark if they were higher or lower than the previous one.
+- An icon showing if that round passed as success
+- Closed card waiting to be open.
+
+
+**The game interface has next elements**
+- Betting input (add the amount of money to bet for the round)
+- Statistic (how much money you currently have)
+- Game controls (lower or higher)
+- New game (starts a new game with the current amount of coins)
+- Reset (starts a new game with 100 coins)
+
+
+Additional
+----------
+You are free to use any design or animations you find fit. 
+You can add sounds if you want.
+Don’t forget that a pack of cards has a defined number of cards and if a card is open, it cannot be open again.
+
+
+Conditions
+----------
+- Use React/Redux
+- On refresh, the game must continue from before refresh.
+- The task must be submitted as a Git URL 
+- Provide Readme.md instructions with how to install and prerequisites. 
+- Using ESLint is mandatory
+- This Form will automatically close in 2 weeks from the date you received it

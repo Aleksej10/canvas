@@ -21,7 +21,7 @@ You can quickly check the current state [here](https://aleksej10.github.io/canva
   ```
 
 ## Current state
-[!demo](https://github.com/Aleksej10/canvas/blob/master/demo.gif)  
+![demo](https://github.com/Aleksej10/canvas/blob/master/demo.gif)  
 Game is currently implemented using React only.   
 Some functionality (new game/reset money/indicate each turn) is yet to be implemented.  
 

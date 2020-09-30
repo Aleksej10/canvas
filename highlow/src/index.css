@@ -1,0 +1,107 @@
+*{ 
+  box-sizing: border-box; 
+  transition-timing-function: ease-out;
+  transition: color 0.3s, opacity 0.3s;
+}
+
+p{ margin: var(--p-margin) 1vmin var(--p-margin) 0.5vmin; }
+
+body {
+  overflow: hidden;
+  display: block;
+  justify-content: center;
+  align-items: center;
+  background: white;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+.deck{
+  height: 20vmin;
+  width: 15vmin;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1vmin solid lightgrey;
+  border-radius: 1vmin;
+  background: red;
+  margin: 1vmin;
+}
+
+.tcards{
+  height: 20vmin;
+  width: 3.5vmin;
+  display: flex;
+  flex-direction: column;
+  justify-content: top;
+  align-items: center;
+  background: lightgrey;
+  margin: 0.5vmin;
+  padding-top: 1vmin;
+  border-radius: 1vmin 0 0 1vmin;
+}
+
+.lcard{
+  height: 20vmin;
+  width: 15vmin;
+  margin: 1vmin;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: lightgrey;
+  border-radius: 1vmin;
+}
+.cards{
+  height: 30vmin;
+  width: 100vmin;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+  background: green;
+  padding: 2vmin;
+}
+
+.bets{
+  height: 10vmin;
+  width: 100vmin;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background: red;
+  padding: 2vmin;
+}
+
+.game{
+  margin-top: 10vmin;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn{
+  width: 9vmin;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: yellow;
+  border-radius: 50%;
+  margin: 1vmin;
+}
+
+.bet-p{
+  user-select: none;
+  font-family: 'IBM Plex Mono', monospace; 
+  font-size: 7vmin;
+  font-weight: 500;
+}
+
+.card-p{
+  user-select: none;
+  font-family: Futura, serif; 
+  font-size: 2vmin;
+}

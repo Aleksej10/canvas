@@ -29,6 +29,17 @@ body {
   margin: 1vmin;
 }
 
+.bet {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 50%;
+  width: 100%;
+  padding: 1vmin;
+}
+
+
 .tcards{
   height: 20vmin;
   width: 3.5vmin;

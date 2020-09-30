@@ -36,10 +36,12 @@ function LastTurned(props){
 }
 
 function Deck(props){
+  const upArrow = '🔺'; //to supess warnings 
+  const downArrow = '🔻';
   return(
-    <div className='deck'
-      onClick={()=>props.onClick()}
-    >
+    <div className='deck'>
+      <div className='bet' onClick={()=>props.onClick(true)}> <p className='bet-p'> { upArrow } </p> </div>
+      <div className='bet' onClick={()=>props.onClick(false)}> <p className='bet-p'> { downArrow } </p> </div>
     </div>
   );
 }
@@ -48,7 +50,7 @@ class Cards extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      index: -1,
+      index: 0,
       cards: this.getShuffled(),
     }
   }
@@ -62,14 +64,19 @@ class Cards extends React.Component{
     return a;
   }
 
-  deckClick(){
+  deckClick(high){
     if(this.state.index >= 51) return;
-    this.setState({
-      index: this.state.index + 1,
-    });
     if(this.state.index === 51){
-      console.log('deck is empy')
+      console.log('deck is empy');
+      return;
     }
+    const decider = high ? (previous, current) => { return current > previous ? true : false } : (previous, current) => { return current < previous ? true : false };
+    const pCard = this.state.cards[this.state.index] % 13;
+    const cCard = this.state.cards[this.state.index+1] % 13;
+
+    console.log(decider(pCard, cCard) ? 'keep going' : 'you\' garbage');
+
+    this.setState({ index: this.state.index + 1 });
   }
 
   render(){
@@ -83,7 +90,7 @@ class Cards extends React.Component{
     return (
       <div className='cards'>
         <Deck 
-          onClick={()=>this.deckClick()}
+          onClick={(high)=>this.deckClick(high)}
         />
         { turnedCards }
         { lastCard }

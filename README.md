@@ -4,10 +4,19 @@
 Make a high-low card game using Reaxt/Redux and Canvas.  
 
 ## How to run
-Position yourself inside `highlow` directory and run   
-```
-npm start
-```
+* Create new react project with 
+  ```
+  npx create-react-app app-name
+  ```
+* cd into newly created directory
+  ```
+  cd app-name
+  ```
+* Switch contents of `src` folder with one from this repo
+* Finally, start the app with 
+  ```
+  npm start
+  ```
 
 ## Current status
 Game is currently implemented using React only.

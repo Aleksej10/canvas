@@ -2,29 +2,53 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-function TurnedCards(props){
+function numToCard(n){
+  const values = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+  const suits = ['❤', '♠', '♦','♣'];
+  const color = ['red', 'black', 'red', 'black'];
+  const card = {
+    value: n,
+    text: values[n%13],
+    suit: suits[Math.floor(n/13)],
+    color: color[Math.floor(n/13)],
+  };
+  return card;
+}
+
+function TurnedCard(props){
+  const p = numToCard(props.value);
   return (
     <div className='tcards'>
-      <p className='card-p' style={{ color: props.color }}> { props.text } </p>
-      <p className='card-p' style={{ color: props.color }}> { props.suit } </p>
+      <p className='card-p' style={{ color: p.color }}> { p.text } </p>
+      <p className='card-p' style={{ color: p.color }}> { p.suit } </p>
     </div>
   );
 }
 
-class LastTurned extends React.Component{
-  render(){
-    return (
-      <div className='lcard'>
-      </div>
-    );
-  }
+function LastTurned(props){
+  const p = numToCard(props.value);
+  return (
+    <div className='lcard'>
+      <p className='card-p' style={{ color: p.color }}> { p.text } </p>
+      <p className='card-p' style={{ color: p.color }}> { p.suit } </p>
+    </div>
+  );
 }
 
-class Deck extends React.Component{
+function Deck(props){
+  return(
+    <div className='deck'
+      onClick={()=>props.onClick()}
+    >
+    </div>
+  );
+}
+
+class Cards extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      index: 0,
+      index: -1,
       cards: this.getShuffled(),
     }
   }
@@ -38,52 +62,31 @@ class Deck extends React.Component{
     return a;
   }
 
-  numToCard(n){
-    // 2 3 4 5 6 7 8 9 10 J Q K A
-    const values = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
-    const suits = ['❤', '♠', '♦','♣'];
-    const color = ['red', 'black', 'red', 'black'];
-    const card = {
-      value: n,
-      text: values[n%13],
-      suit: suits[Math.floor(n/13)],
-      color: color[Math.floor(n/13)],
-    };
-    return card;
-  }
-
   deckClick(){
     if(this.state.index >= 51) return;
-    console.log(this.numToCard(this.state.cards[this.state.index]))
-    if(this.state.index === 51){
-      console.log('deck is empy')
-    }
     this.setState({
       index: this.state.index + 1,
     });
+    if(this.state.index === 51){
+      console.log('deck is empy')
+    }
   }
 
   render(){
-    return (
-      <div className='deck'
-        onClick={()=>this.deckClick()}
-      >
-      </div>
-    );
-  }
-}
-
-class Cards extends React.Component{
-  render(){
+    const cards = this.state.cards;
+    const index = this.state.index;
+    var turnedCards = [];
+    for(let i = 0; i<index; i++){
+      turnedCards.push(<TurnedCard key = {i} value= { cards[i] } />);
+    }
+    const lastCard = index === -1 ? null : <LastTurned value= { cards[index] } />;
     return (
       <div className='cards'>
-        <Deck />
-        <TurnedCards 
-          text='10'
-          suit='❤'
-          color='red'
+        <Deck 
+          onClick={()=>this.deckClick()}
         />
-        <LastTurned />
+        { turnedCards }
+        { lastCard }
       </div>
     );
   }
@@ -123,7 +126,7 @@ class Bets extends React.Component{
         <p className='bet-p'> { this.state.bet } </p>
         <div className='btn' onClick={()=>this.incBet()}> <p className='bet-p'> + </p></div>
         <div className='btn' onClick={()=>this.decBet()}> <p className='bet-p'> - </p></div>
-        <p className='bet-p'> total: { this.state.total } </p>
+        <p className='bet-p'> total: { this.state.total } $ </p>
       </div>
     );
   }

@@ -48,14 +48,16 @@ body {
   margin: 1vmin;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: top;
   align-items: center;
   background: lightgrey;
+  padding-top: 1vmin;
+  padding-left: 1vmin;
   border-radius: 1vmin;
 }
 .cards{
   height: 30vmin;
-  width: 100vmin;
+  width: 80vw;
   display: flex;
   flex-direction: row;
   justify-content: left;

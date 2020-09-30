@@ -15,10 +15,19 @@ function numToCard(n){
   return card;
 }
 
+function getShuffled(){
+  var a = [...Array(52).keys()];
+  for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 function TurnedCard(props){
   const p = numToCard(props.value);
   return (
-    <div className='tcards'>
+    <div className='tcard'>
       <p className='card-p' style={{ color: p.color }}> { p.text } </p>
       <p className='card-p' style={{ color: p.color }}> { p.suit } </p>
     </div>
@@ -29,8 +38,14 @@ function LastTurned(props){
   const p = numToCard(props.value);
   return (
     <div className='lcard'>
-      <p className='card-p' style={{ color: p.color }}> { p.text } </p>
-      <p className='card-p' style={{ color: p.color }}> { p.suit } </p>
+      <div className='pipValue'>
+        <p className='card-p' style={{ color: p.color }}> { p.text } </p>
+        <p className='card-p' style={{ color: p.color }}> { p.suit } </p>
+      </div>
+      <div className='pipValue upSideDown'>
+        <p className='card-p' style={{ color: p.color }}> { p.suit } </p>
+        <p className='card-p' style={{ color: p.color }}> { p.text } </p>
+      </div>
     </div>
   );
 }
@@ -46,66 +61,50 @@ function Deck(props){
   );
 }
 
-class Cards extends React.Component{
+function Cards(props){
+  const cards = props.cards;
+  const index = props.index;
+  var turnedCards = [];
+  for(let i = 0; i<index; i++){
+    turnedCards.push(<TurnedCard key = {i} value= { cards[i] } />);
+  }
+  const lastCard = index === -1 ? null : <LastTurned value= { cards[index] } />;
+
+  return (
+    <div className='cards'>
+      <Deck 
+        onClick={(high)=>props.onClick(high)}
+      />
+      { turnedCards }
+      { lastCard }
+    </div>
+  );
+}
+
+function Bets(props){
+  return (
+    <div className='bets'>
+      <div className='hbox'>
+        <p className='bet-p'> { props.bet } </p>
+        <div className='btn' onClick={()=>props.incBet()}> <p className='bet-p'> + </p></div>
+        <div className='btn' onClick={()=>props.decBet()}> <p className='bet-p'> - </p></div>
+      </div>
+      <div className='hbox'>
+        <p className='bet-p'> total: { props.total } $ </p>
+      </div>
+    </div>
+  );
+}
+
+class Game extends React.Component {
   constructor(props){
     super(props);
     this.state = {
       index: 0,
-      cards: this.getShuffled(),
-    }
-  }
-
-  getShuffled(){
-    var a = [...Array(52).keys()];
-    for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  }
-
-  deckClick(high){
-    if(this.state.index >= 51) return;
-    if(this.state.index === 51){
-      console.log('deck is empy');
-      return;
-    }
-    const decider = high ? (previous, current) => { return current > previous ? true : false } : (previous, current) => { return current < previous ? true : false };
-    const pCard = this.state.cards[this.state.index] % 13;
-    const cCard = this.state.cards[this.state.index+1] % 13;
-
-    console.log(decider(pCard, cCard) ? 'keep going' : 'you\' garbage');
-
-    this.setState({ index: this.state.index + 1 });
-  }
-
-  render(){
-    const cards = this.state.cards;
-    const index = this.state.index;
-    var turnedCards = [];
-    for(let i = 0; i<index; i++){
-      turnedCards.push(<TurnedCard key = {i} value= { cards[i] } />);
-    }
-    const lastCard = index === -1 ? null : <LastTurned value= { cards[index] } />;
-    return (
-      <div className='cards'>
-        <Deck 
-          onClick={(high)=>this.deckClick(high)}
-        />
-        { turnedCards }
-        { lastCard }
-      </div>
-    );
-  }
-}
-
-class Bets extends React.Component{
-  constructor(props){
-    super(props);
-    this.state = {
+      cards: getShuffled(),
       bet: 10,
       total: 90,
-    };
+    }
   }
 
   incBet(){
@@ -124,27 +123,73 @@ class Bets extends React.Component{
       bet: this.state.bet-5,
       total: this.state.total+5,
     });
-
   }
 
-  render(){
-    return (
-      <div className='bets'>
-        <p className='bet-p'> { this.state.bet } </p>
-        <div className='btn' onClick={()=>this.incBet()}> <p className='bet-p'> + </p></div>
-        <div className='btn' onClick={()=>this.decBet()}> <p className='bet-p'> - </p></div>
-        <p className='bet-p'> total: { this.state.total } $ </p>
-      </div>
-    );
+  updateBank(outcome){
+    if(outcome){
+      this.setState({ 
+        total: this.state.total+this.state.bet,
+      });
+    }
+    else{
+      this.setState({
+        index: 0,
+        cards: getShuffled(),
+      })
+      var bet = this.state.bet;
+      var total = this.state.total;
+      if(total >= 2*bet){
+        this.setState({
+          total: total-bet,
+          bet: bet,
+        })
+      }
+      else if(total < 10){
+        this.setState({
+          total: total,
+          bet: 0,
+        })
+        console.log('minimum bet is 10');
+      }
+      else{
+        this.setState({
+          total: total-10,
+          bet: 10,
+        })
+      }
+    }
   }
-}
 
-class Game extends React.Component {
+  deckClick(high){
+    if(this.state.index >= 51){
+      console.log('deck is empy');
+      return;
+    }
+    const decider = high ?  (previous, current) => { return current > previous } 
+                         :  (previous, current) => { return current < previous };
+    const pCard = this.state.cards[this.state.index] % 13;
+    const cCard = this.state.cards[this.state.index+1] % 13;
+
+    const outcome = decider(pCard, cCard);
+    console.log(outcome ? 'keep going' : 'unlucky');
+    this.setState({ index: this.state.index + 1 });
+    setTimeout(()=>{this.updateBank(outcome)}, outcome ? 0 : 1000);
+  }
+
   render(){
     return (
       <div className='game'>
-        <Cards />
-        <Bets />
+        <Cards 
+          index = { this.state.index }
+          cards = { this.state.cards }
+          onClick={ (high) => this.deckClick(high) }
+        />
+        <Bets 
+          bet = { this.state.bet }
+          total = { this.state.total }
+          incBet = { () => this.incBet() }
+          decBet = { () => this.decBet() }
+        />
       </div>
     );
   }

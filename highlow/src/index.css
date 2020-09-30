@@ -1,7 +1,7 @@
 *{ 
   box-sizing: border-box; 
   transition-timing-function: ease-out;
-  transition: color 0.3s, opacity 0.3s;
+  transition: color 0.3s, opacity 0.3s, box-shadow 0.3s;
 }
 
 p{ margin: var(--p-margin) 1vmin var(--p-margin) 0.5vmin; }
@@ -11,7 +11,7 @@ body {
   display: block;
   justify-content: center;
   align-items: center;
-  background: white;
+  background: #f9f9f9;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
@@ -23,10 +23,11 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: 1vmin solid lightgrey;
+  border: 1vmin solid white;
   border-radius: 1vmin;
-  background: red;
+  background: maroon;
   margin: 1vmin;
+  box-shadow: 0 0.2vmin 0.5vmin 0 rgba(0, 0, 0, .2);
 }
 
 .bet {
@@ -40,17 +41,18 @@ body {
 }
 
 
-.tcards{
+.tcard{
   height: 20vmin;
   width: 3.5vmin;
   display: flex;
   flex-direction: column;
   justify-content: top;
   align-items: center;
-  background: lightgrey;
+  background: white;
   margin: 0.5vmin;
   padding-top: 1vmin;
   border-radius: 1vmin 0 0 1vmin;
+  box-shadow: 0 0.2vmin 0.5vmin 0 rgba(0, 0, 0, .2);
 }
 
 .lcard{
@@ -58,14 +60,27 @@ body {
   width: 15vmin;
   margin: 1vmin;
   display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 1vmin;
+  border-radius: 1vmin;
+  box-shadow: 0 0.2vmin 0.5vmin 0 rgba(0, 0, 0, .2);
+}
+
+.pipValue{
+  height: 100%;
+  display: flex;
   flex-direction: column;
   justify-content: top;
   align-items: center;
-  background: lightgrey;
-  padding-top: 1vmin;
-  padding-left: 1vmin;
-  border-radius: 1vmin;
 }
+
+.upSideDown{
+  transform: rotate(180deg);
+}
+
 .cards{
   height: 30vmin;
   width: 80vw;
@@ -73,7 +88,6 @@ body {
   flex-direction: row;
   justify-content: left;
   align-items: center;
-  background: green;
   padding: 2vmin;
 }
 
@@ -82,10 +96,14 @@ body {
   width: 100vmin;
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  background: red;
   padding: 2vmin;
+}
+
+.hbox{
+  display: flex;
+  align-items: center;
 }
 
 .game{
@@ -97,13 +115,21 @@ body {
 }
 
 .btn{
+  height: 9vmin;
   width: 9vmin;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: yellow;
+  background: white;
   border-radius: 50%;
   margin: 1vmin;
+  box-shadow: 0 0.2vmin 0.5vmin 0 rgba(0, 0, 0, .2);
+}
+
+.btn:hover{
+  height: 9.1vmin;
+  width: 9.1vmin;
+  box-shadow: 0 0.4vmin 1vmin 0 rgba(0, 0, 0, .1);
 }
 
 .bet-p{

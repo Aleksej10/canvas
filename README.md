@@ -32,3 +32,4 @@ It is written in React/Redux using css for UI elements.
 
 ## TODO
 * Organize code into separate folders.
+* Make mobile friendly?

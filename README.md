@@ -1,11 +1,13 @@
 # JavaScript Game Developer coding test
+You can quickly check the current state [here](https://aleksej10.github.io/canvas/).  
 
 ## Task
 Make a high-low card game using React/Redux and Canvas.  
-You can quickly check the current state [here](https://aleksej10.github.io/canvas/).  
+
+## What's been done so far
 
 
-## How to run
+## Run localy
 * Create new react project with 
   ```
   npx create-react-app app-name
@@ -19,6 +21,8 @@ You can quickly check the current state [here](https://aleksej10.github.io/canva
   ```
   npm start
   ```
+
+***Or*** simply follow the link at the top of the `README`
 
 ## Current state
 ![demo](https://github.com/Aleksej10/canvas/blob/master/demo.gif)  

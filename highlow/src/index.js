@@ -1,9 +1,12 @@
 import React from 'react';
 import {render} from 'react-dom';
 import {createStore} from 'redux';
+import {persistStore, persistReducer} from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 import {Provider} from 'react-redux';
 import Game from './Game';
 import { getShuffled } from './Game';
+import {PersistGate} from 'redux-persist/integration/react';
 
 const reducer = (state = 
   {
@@ -14,6 +17,16 @@ const reducer = (state =
     outcome: '',
   }, action) => {
   switch(action.type){
+    case 'reset':
+      state = {
+        ...state,
+        index: 0,
+        cards: getShuffled(),
+        bet: 10,
+        total: 90,
+        outcome: '',
+      };
+      break;
     case 'decBet':
       if(state.bet <= 10) break;
       state = {
@@ -73,14 +86,24 @@ const reducer = (state =
   return state;
 };
 
-const store = createStore(reducer);
+const persistConfig = {
+  key: 'root',
+  storage,
+}
+
+const persistedReducer = persistReducer(persistConfig, reducer);
+
+let store = createStore(persistedReducer);
+let persistor = persistStore(store);
 
 store.subscribe(()=>{});
 
 
 render(
   <Provider store={store}>
-    <Game />
+    <PersistGate loading={null} persistor={persistor}>
+      <Game />
+    </PersistGate>
   </Provider>,
   document.getElementById('root')
 )

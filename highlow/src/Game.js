@@ -85,6 +85,9 @@ function Cards(props){
 function Bets(props){
   return (
     <div className='bets'>
+      <div className='btn' onClick={()=>props.reset()}>
+        <p className='bet-p'> reset </p>
+      </div>
       <div className='hbox'>
         <p className='bet-p'> bet: { props.bet } </p>
         <div className='btn' onClick={()=>props.incBet()}> <p className='bet-p'> + </p></div>
@@ -115,18 +118,21 @@ class Game extends React.Component {
   render(){
     return (
       <div className='game'>
-        <Cards 
-          index = { this.props.index }
-          cards = { this.props.cards }
-          outcome = { this.props.outcome }
-          onClick={ (high) => this.deckClick(high) }
-        />
-        <Bets 
-          bet = { this.props.bet }
-          total = { this.props.total }
-          incBet = { () => this.props.incBet() }
-          decBet = { () => this.props.decBet() }
-        />
+        <div className='vbox'>
+          <Cards 
+            index = { this.props.index }
+            cards = { this.props.cards }
+            outcome = { this.props.outcome }
+            onClick={ (high) => this.deckClick(high) }
+          />
+          <Bets 
+            bet = { this.props.bet }
+            total = { this.props.total }
+            incBet = { () => this.props.incBet() }
+            decBet = { () => this.props.decBet() }
+            reset = { () => this.props.reset() }
+          />
+        </div>
       </div>
     );
   }
@@ -145,6 +151,11 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    reset: () => {
+      dispatch({
+        type: 'reset',
+      });
+    },
     decBet: () => {
       dispatch({
         type: 'decBet',

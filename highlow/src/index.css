@@ -1,20 +1,33 @@
+:root {
+  --shadow: rgba(0, 0, 0, .2);
+  --light: white;
+  --background: #f5f5f5;
+  --card-back: #ffeeee;
+  --card-border: white;
+  --green-glow: rgb(50, 255, 50);
+  --red-glow: rgb(255, 50, 50);
+  --btn-shadow: 0.2vmin  0.2vmin 1vmin var(--shadow),
+               -0.2vmin -0.2vmin 1vmin var(--light);
+  --btn-shadow-hover: 0.5vmin  0.5vmin 1.2vmin var(--shadow),
+                     -0.5vmin -0.5vmin 1.2vmin var(--light);
+  --card-shadow: 0 0.2vmin 0.5vmin 0 rgba(0, 0, 0, .2);
+}
+
 *{ 
   box-sizing: border-box; 
   transition-timing-function: ease-out;
   transition: opacity 0.3s, box-shadow 0.3s;
 }
 
-p{ margin: var(--p-margin) 1vmin var(--p-margin) 0.5vmin; }
+p{ margin: 0 0.5vmin 0 0.5vmin; }
 
 body {
   overflow: hidden;
   display: block;
   justify-content: center;
   align-items: center;
-  background: #f9f9f9;
+  background: var(--background);
 }
-
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
 .deck{
   height: 20vmin;
@@ -23,11 +36,11 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: 1vmin solid white;
+  border: 1vmin solid var(--card-border);
   border-radius: 1vmin;
-  background: violet;
+  background: var(--card-back);
   margin: 1vmin;
-  box-shadow: 0 0.2vmin 0.5vmin 0 rgba(0, 0, 0, .2);
+  box-shadow: var(--card-shadow);
 }
 
 .bet {
@@ -40,15 +53,9 @@ body {
   padding: 1vmin;
 }
 
-.green-glow {
-  box-shadow: 0 0.3vmin 0.6vmin 0 rgba(0, 255, 0, .5) !important;
-  background: green;
-}
+.green-glow { box-shadow: 0 0.1vmin 0.9vmin 0 var(--green-glow) !important; }
 
-.red-glow {
-  box-shadow: 0 0.3vmin 0.6vmin 0 rgba(255, 0, 0, .5) !important;
-  background: red;
-}
+.red-glow { box-shadow: 0 0.1vmin 0.9vmin 0 var(--red-glow) !important; }
 
 
 .tcard{
@@ -58,11 +65,11 @@ body {
   flex-direction: column;
   justify-content: top;
   align-items: center;
-  background: white;
+  background: var(--card-border);
   margin: 0.5vmin;
   padding-top: 1vmin;
   border-radius: 1vmin 0 0 1vmin;
-  box-shadow: 0 0.2vmin 0.5vmin 0 rgba(0, 0, 0, .2);
+  box-shadow: var(--card-shadow);
 }
 
 .lcard{
@@ -73,10 +80,10 @@ body {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background: white;
+  background: var(--card-border);
   padding: 1vmin;
   border-radius: 1vmin;
-  box-shadow: 0 0.2vmin 0.5vmin 0 rgba(0, 0, 0, .2);
+  box-shadow: var(--card-shadow);
 }
 
 .pipValue{
@@ -92,8 +99,6 @@ body {
 }
 
 .cards{
-  height: 30vmin;
-  width: 80vw;
   display: flex;
   flex-direction: row;
   justify-content: left;
@@ -102,8 +107,6 @@ body {
 }
 
 .bets{
-  height: 10vmin;
-  width: 100vmin;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -113,7 +116,15 @@ body {
 
 .hbox{
   display: flex;
+  flex-direction: row !important;
   align-items: center;
+}
+
+
+.vbox{
+  display: flex;
+  flex-direction: column !important;
+  align-items: left;
 }
 
 .game{
@@ -125,28 +136,24 @@ body {
 }
 
 .btn{
-  height: 7vmin;
-  width: 7vmin;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: white;
-  border-radius: 50%;
+  background: var(--light);
+  border-radius: 1vmin;
+  padding: 0 2vmin 0 2vmin;
   margin: 1vmin;
-  box-shadow: 0 0.2vmin 0.5vmin 0 rgba(0, 0, 0, .2);
+  box-shadow: var(--btn-shadow);
 }
 
 .btn:hover{
-  height: 7.1vmin;
-  width: 7.1vmin;
-  box-shadow: 0 0.4vmin 1vmin 0 rgba(0, 0, 0, .1);
+  box-shadow: var(--btn-shadow-hover);
 }
 
 .bet-p{
   user-select: none;
   font-family: Futura, sans-serif; 
   font-size: 6vmin;
-  font-weight: 500;
 }
 
 .card-p{

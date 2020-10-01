@@ -15,7 +15,7 @@ function numToCard(n){
   return card;
 }
 
-function getShuffled(){
+export function getShuffled(){
   var a = [...Array(52).keys()];
   for (let i = a.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -97,106 +97,77 @@ function Bets(props){
   );
 }
 
-export class Game extends React.Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      index: 0,
-      cards: getShuffled(),
-      bet: 10,
-      total: 90,
-      outcome: '',
-    }
-  }
-
-  incBet(){
-    var inc = this.state.total < 5 ? this.state.total : 5;
-    this.setState({
-      bet: this.state.bet+inc,
-      total: this.state.total-inc,
-    });
-  }
-
-  decBet(){
-    if(this.state.bet <= 10){
-      return;
-    }
-    this.setState({
-      bet: this.state.bet-5,
-      total: this.state.total+5,
-    });
-  }
-
-  updateBank(outcome){
-    if(outcome){
-      this.setState({ 
-        total: this.state.total+this.state.bet,
-      });
-    }
-    else{
-      this.setState({
-        index: 0,
-        cards: getShuffled(),
-        outcome: '',
-      })
-      var bet = this.state.bet;
-      var total = this.state.total;
-      if(total >= 2*bet){
-        this.setState({
-          total: total-bet,
-          bet: bet,
-        })
-      }
-      else if(total < 10){
-        this.setState({
-          total: total,
-          bet: 0,
-        })
-        console.log('minimum bet is 10');
-      }
-      else{
-        this.setState({
-          total: total-10,
-          bet: 10,
-        })
-      }
-    }
-  }
-
+class Game extends React.Component {
   deckClick(high){
-    if(this.state.index >= 51){
+    if(this.props.index >= 51){
       console.log('deck is empy');
       return;
     }
     const decider = (previous, current) => current !== previous && (current > previous) === high;
-    const pCard = this.state.cards[this.state.index] % 13;
-    const cCard = this.state.cards[this.state.index+1] % 13;
+    const pCard = this.props.cards[this.props.index] % 13;
+    const cCard = this.props.cards[this.props.index+1] % 13;
 
     const outcome = decider(pCard, cCard);
-    console.log(outcome ? 'keep going' : 'unlucky');
-    this.setState({ 
-      index: this.state.index + 1 ,
-      outcome: outcome ? 'green-glow' : 'red-glow',
-    });
-    setTimeout(()=>{this.updateBank(outcome)}, outcome ? 0 : 2000);
+    this.props.setGlow(outcome);
+    setTimeout(()=>{this.props.updateBank(outcome)}, outcome ? 0 : 2000);
   }
 
   render(){
     return (
       <div className='game'>
         <Cards 
-          index = { this.state.index }
-          cards = { this.state.cards }
-          outcome = { this.state.outcome }
+          index = { this.props.index }
+          cards = { this.props.cards }
+          outcome = { this.props.outcome }
           onClick={ (high) => this.deckClick(high) }
         />
         <Bets 
-          bet = { this.state.bet }
-          total = { this.state.total }
-          incBet = { () => this.incBet() }
-          decBet = { () => this.decBet() }
+          bet = { this.props.bet }
+          total = { this.props.total }
+          incBet = { () => this.props.incBet() }
+          decBet = { () => this.props.decBet() }
         />
       </div>
     );
   }
 }
+
+
+const mapStateToProps = (state) => {
+  return {
+    index: state.index,
+    cards: state.cards,
+    bet: state.bet,
+    total: state.total,
+    outcome: state.outcome,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    decBet: () => {
+      dispatch({
+        type: 'decBet',
+      });
+    },
+    incBet: () => {
+      dispatch({
+        type: 'incBet',
+      });
+    },
+    setGlow: (outcome) => {
+      dispatch({
+        type: 'setGlow',
+        outcome: outcome,
+      });
+    },
+    updateBank: (outcome) => {
+      dispatch({
+        type: 'updateBank',
+        outcome: outcome,
+      });
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Game);

@@ -56,5 +56,6 @@ It is written in React/Redux using css for UI elements.
 
 
 ## TODO
+* Indicate game end.
 * Organize code into separate folders.
 * Make mobile friendly?

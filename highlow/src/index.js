@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {createStore, combineReducers, applyMiddleware} from 'redux';
+import {Provider} from 'react-redux';
 import './index.css';
 
 function numToCard(n){
@@ -36,8 +38,9 @@ function TurnedCard(props){
 
 function LastTurned(props){
   const p = numToCard(props.value);
+  const cName = 'lcard ' + props.outcome;
   return (
-    <div className='lcard'>
+    <div className={cName}>
       <div className='pipValue'>
         <p className='card-p' style={{ color: p.color }}> { p.text } </p>
         <p className='card-p' style={{ color: p.color }}> { p.suit } </p>
@@ -51,12 +54,10 @@ function LastTurned(props){
 }
 
 function Deck(props){
-  const upArrow = '🔺'; //to supess warnings 
-  const downArrow = '🔻';
   return(
     <div className='deck'>
-      <div className='bet' onClick={()=>props.onClick(true)}> <p className='bet-p'> { upArrow } </p> </div>
-      <div className='bet' onClick={()=>props.onClick(false)}> <p className='bet-p'> { downArrow } </p> </div>
+      <div className='bet' onClick={()=>props.onClick(true)}> <p className='bet-p'>👆</p> </div>
+      <div className='bet' onClick={()=>props.onClick(false)}> <p className='bet-p'>👇</p> </div>
     </div>
   );
 }
@@ -68,7 +69,6 @@ function Cards(props){
   for(let i = 0; i<index; i++){
     turnedCards.push(<TurnedCard key = {i} value= { cards[i] } />);
   }
-  const lastCard = index === -1 ? null : <LastTurned value= { cards[index] } />;
 
   return (
     <div className='cards'>
@@ -76,7 +76,10 @@ function Cards(props){
         onClick={(high)=>props.onClick(high)}
       />
       { turnedCards }
-      { lastCard }
+      <LastTurned 
+        value = { cards[index] } 
+        outcome = { props.outcome }
+      />
     </div>
   );
 }
@@ -85,12 +88,12 @@ function Bets(props){
   return (
     <div className='bets'>
       <div className='hbox'>
-        <p className='bet-p'> { props.bet } </p>
+        <p className='bet-p'> bet: { props.bet } </p>
         <div className='btn' onClick={()=>props.incBet()}> <p className='bet-p'> + </p></div>
         <div className='btn' onClick={()=>props.decBet()}> <p className='bet-p'> - </p></div>
       </div>
       <div className='hbox'>
-        <p className='bet-p'> total: { props.total } $ </p>
+        <p className='bet-p'> total: { props.total } 💰</p>
       </div>
     </div>
   );
@@ -104,6 +107,7 @@ class Game extends React.Component {
       cards: getShuffled(),
       bet: 10,
       total: 90,
+      outcome: '',
     }
   }
 
@@ -135,6 +139,7 @@ class Game extends React.Component {
       this.setState({
         index: 0,
         cards: getShuffled(),
+        outcome: '',
       })
       var bet = this.state.bet;
       var total = this.state.total;
@@ -165,15 +170,17 @@ class Game extends React.Component {
       console.log('deck is empy');
       return;
     }
-    const decider = high ?  (previous, current) => { return current > previous } 
-                         :  (previous, current) => { return current < previous };
+    const decider = (previous, current) => current !== previous && (current > previous) === high;
     const pCard = this.state.cards[this.state.index] % 13;
     const cCard = this.state.cards[this.state.index+1] % 13;
 
     const outcome = decider(pCard, cCard);
     console.log(outcome ? 'keep going' : 'unlucky');
-    this.setState({ index: this.state.index + 1 });
-    setTimeout(()=>{this.updateBank(outcome)}, outcome ? 0 : 1000);
+    this.setState({ 
+      index: this.state.index + 1 ,
+      outcome: outcome ? 'green-glow' : 'red-glow',
+    });
+    setTimeout(()=>{this.updateBank(outcome)}, outcome ? 0 : 2000);
   }
 
   render(){
@@ -182,6 +189,7 @@ class Game extends React.Component {
         <Cards 
           index = { this.state.index }
           cards = { this.state.cards }
+          outcome = { this.state.outcome }
           onClick={ (high) => this.deckClick(high) }
         />
         <Bets 

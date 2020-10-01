@@ -1,7 +1,7 @@
 *{ 
   box-sizing: border-box; 
   transition-timing-function: ease-out;
-  transition: color 0.3s, opacity 0.3s, box-shadow 0.3s;
+  transition: opacity 0.3s, box-shadow 0.3s;
 }
 
 p{ margin: var(--p-margin) 1vmin var(--p-margin) 0.5vmin; }
@@ -25,7 +25,7 @@ body {
   align-items: center;
   border: 1vmin solid white;
   border-radius: 1vmin;
-  background: maroon;
+  background: violet;
   margin: 1vmin;
   box-shadow: 0 0.2vmin 0.5vmin 0 rgba(0, 0, 0, .2);
 }
@@ -38,6 +38,16 @@ body {
   height: 50%;
   width: 100%;
   padding: 1vmin;
+}
+
+.green-glow {
+  box-shadow: 0 0.3vmin 0.6vmin 0 rgba(0, 255, 0, .5) !important;
+  background: green;
+}
+
+.red-glow {
+  box-shadow: 0 0.3vmin 0.6vmin 0 rgba(255, 0, 0, .5) !important;
+  background: red;
 }
 
 
@@ -115,8 +125,8 @@ body {
 }
 
 .btn{
-  height: 9vmin;
-  width: 9vmin;
+  height: 7vmin;
+  width: 7vmin;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -127,15 +137,15 @@ body {
 }
 
 .btn:hover{
-  height: 9.1vmin;
-  width: 9.1vmin;
+  height: 7.1vmin;
+  width: 7.1vmin;
   box-shadow: 0 0.4vmin 1vmin 0 rgba(0, 0, 0, .1);
 }
 
 .bet-p{
   user-select: none;
-  font-family: 'IBM Plex Mono', monospace; 
-  font-size: 7vmin;
+  font-family: Futura, sans-serif; 
+  font-size: 6vmin;
   font-weight: 500;
 }
 

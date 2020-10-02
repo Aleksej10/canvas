@@ -26,6 +26,7 @@ Make a high-low card game using React/Redux and Canvas.
   - [x] Build a game interface using React/Redux. 
   - [x] On refresh, the game must continue from before refresh.
   - [x] Render the cards using canvas.
+  - [x] Use ESLint
 
 ## Note
 I kept both canvas and div-element generated playing cards because   

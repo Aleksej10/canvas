@@ -5,28 +5,32 @@ You can quickly check the current state [here](https://aleksej10.github.io/canva
 Make a high-low card game using React/Redux and Canvas.  
 
 ## What's been done so far
-* UI
-  - game view 
+* Gameplay UI
+  - `<div>` cards
     * back of the card with buttons for guessing higher or lower 
     * last opened card indicating how the last guess went
     * previous cards stacked on top of each other
-  - betting view
-    * reset button
-    * current bet and buttons for chagning bet size
-    * total amount
+    * arrows in bottom-left corner indicating what user guessed for that card
+  - `<canvas>` cards
+    * cards stacked on top of each other
+    * last guess (higher/lower) is indicated by card's position
+* Controls UI
+  - `new game`, `reset`, `collect` and buttons for changing bet size.
 * Logic
-  - minimum bet is 10
+  - minimum bet is 5
   - deck gets shuffled after each round
-  - round ends with a loss or with a game reset
-  - if user's guess is correct, bet size is won and bet size remains the same
-  - if user's guess is not correct, player loses the money he bet, and bet size is updated like this:
-      * user has enough money to bet the same amout again: bet amout is kept
-      * user have less than 10 units left: game ends
-      * otherwise: bet size is changed to 10
+  - round ends with a loss, `collect` or with `reset`
+  - if user's guess is correct, his in-round money doubles
+  - if user's guess is not correct, he loses all in-round money
+
 * Conditions 
   - [x] Build a game interface using React/Redux. 
   - [x] On refresh, the game must continue from before refresh.
-  - [ ] Render the cards using canvas.
+  - [x] Render the cards using canvas.
+
+## Note
+I kept both canvas and div-element generated playing cards because   
+I didn't like how the canvas generated ones turend out to be.
 
 ## Run localy
 * Create new react project with 
@@ -47,15 +51,7 @@ Make a high-low card game using React/Redux and Canvas.
 
 ## Current state
 ![demo](https://github.com/Aleksej10/canvas/blob/master/demo.gif)  
-Game is almost **fully** functional.  
-It is written in React/Redux using css for UI elements.  
-
-**fully**:
-  - Parts of the game logic are awaiting clearance (namely `new game` and `collect` buttons).
-  - UI is still to be implemented using Canvas.
-
+Game is *fully** functional.  
 
 ## TODO
-* Indicate game end.
 * Organize code into separate folders.
-* Make mobile friendly?

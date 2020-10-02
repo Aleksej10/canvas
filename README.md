@@ -53,5 +53,3 @@ I didn't like how the canvas generated ones turend out to be.
 ![demo](https://github.com/Aleksej10/canvas/blob/master/demo.gif)  
 Game is *fully** functional.  
 
-## TODO
-* Organize code into separate folders.

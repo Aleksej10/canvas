@@ -4,7 +4,6 @@ You can quickly check the current state [here](https://aleksej10.github.io/canva
 ## Task
 Make a high-low card game using React/Redux and Canvas.  
 
-## What's been done so far
 * Gameplay UI
   - `<div>` cards
     * back of the card with buttons for guessing higher or lower 
@@ -30,7 +29,8 @@ Make a high-low card game using React/Redux and Canvas.
 
 ## Note
 I kept both canvas and div-element generated playing cards because   
-I didn't like how the canvas generated ones turend out to be.
+I didn't like how the canvas generated ones turend out to be.  
+They work in sync so it would be easy to quickly remove one.
 
 ## Run localy
 * Create new react project with 
@@ -51,5 +51,4 @@ I didn't like how the canvas generated ones turend out to be.
 
 ## Current state
 ![demo](https://github.com/Aleksej10/canvas/blob/master/demo.gif)  
-Game is *fully** functional.  
 

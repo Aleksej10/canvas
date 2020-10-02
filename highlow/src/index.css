@@ -63,7 +63,7 @@ body {
   width: 3.5vmin;
   display: flex;
   flex-direction: column;
-  justify-content: top;
+  justify-content: space-between;
   align-items: center;
   background: var(--card-border);
   margin: 0.5vmin;
@@ -166,11 +166,33 @@ body {
   display: flex;
   height: 30vmin;
   width: 88vmin;
-  padding: 3vmin 3vmin;
+  padding: 2vmin 2vmin;
   margin: 3vmin 3vmin;
   background: green;
+  border-radius: 2vmin;
 }
 
 .HiddenImage{
   display: none;
+}
+
+.logger-div {
+    background: var(--light);
+    position: relative;
+    display: flex;
+    flex-direction: column; 
+    justify-content: center;
+    align-items: left;
+    margin: auto;
+    margin-top: 1vmin;
+    border-radius: 2vmin;
+    box-shadow: var(--card-shadow);
+    padding:  0 1vmin 0vmin 2vmin;
+    opacity: 0;
+}
+
+.logger-p{
+    font-family: Futura, sans-serif;
+    font-size: 5vmin; 
+    user-select: none;
 }

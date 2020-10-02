@@ -5,16 +5,16 @@ import {persistStore, persistReducer} from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import {Provider} from 'react-redux';
 import Game from './Game';
-import { getShuffled } from './Game';
+import { getShuffled, log_msg } from './Game';
 import {PersistGate} from 'redux-persist/integration/react';
 
 const reducer = (state = 
   {
     index: -1,
-    cards: getShuffled(),
     bet: 10,
     total: 90,
     outcome: '',
+    guesses: [],
   }, action) => {
   switch(action.type){
     case 'reset': {
@@ -26,12 +26,13 @@ const reducer = (state =
         total: 90,
         outcome: '',
         inGameMoney: 0,
+        guesses: [],
       };
       break;
     }
     case 'collect': {
       if(state.inGameMoney === 0){
-        console.log('you have nothing to collect!');
+        log_msg('you have nothing to collect!', 'red');
         break;
       }
       const total = state.total + state.inGameMoney;
@@ -54,12 +55,13 @@ const reducer = (state =
         ...state,
         inGameMoney: 0,
       };
+      log_msg('you died', 'red');
       break;
     }
     case 'newGame': {
       const inGameMoney = state.bet;
       if(inGameMoney === 0){
-        console.log('you need to bet something');
+        log_msg('minimum bet is 5', 'orange');
         break;
       }
       state = {
@@ -69,6 +71,7 @@ const reducer = (state =
         inGameMoney: inGameMoney,
         outcome: '',
         bet: 0,
+        guesses: [],
       };
       break;
     }
@@ -95,6 +98,7 @@ const reducer = (state =
         ...state,
         index: state.index + 1,
         outcome: action.outcome ? 'green-glow' : 'red-glow',
+        guesses: state.guesses.concat([action.guess]),
       }; 
       break;
     }
@@ -129,7 +133,6 @@ let store = createStore(persistedReducer);
 let persistor = persistStore(store);
 
 store.subscribe(()=>{});
-
 
 render(
   <Provider store={store}>

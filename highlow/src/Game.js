@@ -3,6 +3,16 @@ import {connect} from 'react-redux';
 import './index.css';
 import deckImage from './deck.png';
 
+export function log_msg(msg, color){
+    var logd = document.getElementById('logger-div');
+    var logp = document.getElementById('logger-p');
+    logd.style.opacity = 0;
+    logp.style.color = color;
+    logp.innerText = msg;
+    logd.style.opacity = 1;
+    if(color === 'black') return;
+    setTimeout(() => { logd.style.opacity = 0; }, 2000);
+}
 
 function numToCard(n){
   const values = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
@@ -28,10 +38,17 @@ export function getShuffled(){
 
 function TurnedCard(props){
   const p = numToCard(props.value);
+  const arrow = (props.guess === null) ? '' : (props.guess ? `🔺` : `🔻`);
+  
   return (
     <div className='tcard'>
-      <p className='card-p' style={{ color: p.color }}> { p.text } </p>
-      <p className='card-p' style={{ color: p.color }}> { p.suit } </p>
+      <div className='vbox'>
+        <p className='card-p' style={{ color: p.color }}> { p.text } </p>
+        <p className='card-p' style={{ color: p.color }}> { p.suit } </p>
+      </div>
+      <div className='vbox'>
+        <p className='card-p'> { arrow } </p>
+      </div>
     </div>
   );
 }
@@ -67,7 +84,13 @@ function Cards(props){
   const index = props.index;
   var turnedCards = [];
   for(let i = 0; i<index; i++){
-    turnedCards.push(<TurnedCard key = {i} value= { cards[i] } />);
+    const guess = (index > 0) ? props.guesses[i] : null;
+    turnedCards.push(
+      <TurnedCard 
+        key = {i} 
+        value= { cards[i] } 
+        guess = { guess }
+      />);
   }
   const lastTurned = index < 0 ? 
     null : 
@@ -84,7 +107,7 @@ function Cards(props){
       { turnedCards }
       { lastTurned }
       <div className='vbox'>
-        <p className='bet-p'> { props.inGameMoney } </p>
+        <p className='bet-p'> your money: { props.inGameMoney } </p>
         <div className='btn' onClick={()=>props.collect()}>
           <p className='bet-p'> collect </p>
         </div>
@@ -117,13 +140,11 @@ function Controls(props){
 }
 
 class GameCanvas extends React.Component {
-  constructor(props){
-    super(props);
-    this.ref = React.createRef();
-  }
-
   componentDidMount(){
-    this.draw_cards();
+    const img = this.refs.deckImg;
+    img.onload = () => {
+      this.draw_cards();
+    }
   }
 
   componentDidUpdate(){
@@ -135,7 +156,8 @@ class GameCanvas extends React.Component {
     const cards = this.props.cards;
     const index = this.props.index;
     for(let i=0; i<= index; i++){
-      this.draw_card(cards[i], i*12, 0);
+      const y = (i > 0) ? (this.props.guesses[i-1] ? 0 : 10) : 0; 
+      this.draw_card(cards[i], i*12, y);
     }
   }
 
@@ -175,10 +197,10 @@ class GameCanvas extends React.Component {
           className='GameCanvas'
         />
         <img
-          ref="deckImg"
-          className="HiddenImage"
+          ref='deckImg'
+          className='HiddenImage'
           src={deckImage}
-          alt="deck"
+          alt='deck'
         />
       </div>
     );
@@ -186,15 +208,13 @@ class GameCanvas extends React.Component {
 }
 
 class Game extends React.Component {
-
-
   deckClick(high){
     if(this.props.inGameMoney === 0){
-      console.log('you need to bet something');
+      log_msg('start a new game', 'red');
       return;
     }
     if(this.props.index >= 51){
-      console.log('deck is empy');
+      log_msg('deck is empy, like this will ever happen!', 'green');
       return;
     }
     const decider = (previous, current) => current !== previous && (current > previous) === high;
@@ -202,7 +222,7 @@ class Game extends React.Component {
     const cCard = this.props.cards[this.props.index+1] % 13;
 
     const outcome = decider(pCard, cCard);
-    this.props.setGlow(outcome);
+    this.props.setGlow(outcome, high);
     this.props.updateBank(outcome);
   }
 
@@ -218,11 +238,13 @@ class Game extends React.Component {
             onClick = { (high) => this.deckClick(high) }
             collect = { () => this.props.collect() }
             inGameMoney = { this.props.inGameMoney }
+            guesses = { this.props.guesses }
           />
         </div>
         <GameCanvas
           index = { this.props.index }
           cards = { this.props.cards }
+          guesses = { this.props.guesses }
         />
         <Controls
           bet = { this.props.bet }
@@ -232,11 +254,13 @@ class Game extends React.Component {
           reset = { () => this.props.reset() }
           newGame = { () => this.props.newGame() }
         />
+        <div className='logger-div' id='logger-div'>
+            <p className='logger-p' id='logger-p'> </p> 
+        </div>
       </div>
     );
   }
 }
-
 
 const mapStateToProps = (state) => {
   return {
@@ -246,6 +270,7 @@ const mapStateToProps = (state) => {
     total: state.total,
     outcome: state.outcome,
     inGameMoney: state.inGameMoney,
+    guesses: state.guesses,
   };
 };
 
@@ -286,10 +311,11 @@ const mapDispatchToProps = (dispatch) => {
         type: 'incBet',
       });
     },
-    setGlow: (outcome) => {
+    setGlow: (outcome, guess) => {
       dispatch({
         type: 'setGlow',
         outcome: outcome,
+        guess: guess,
       });
     },
     updateBank: (outcome) => {

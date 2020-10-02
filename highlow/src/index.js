@@ -50,14 +50,6 @@ const reducer = (state =
       };
       break;
     }
-    case 'lost': {
-      state = {
-        ...state,
-        inGameMoney: 0,
-      };
-      log_msg('you died', 'red');
-      break;
-    }
     case 'newGame': {
       const inGameMoney = state.bet;
       if(inGameMoney === 0){
@@ -114,6 +106,7 @@ const reducer = (state =
           ...state,
           inGameMoney: 0,
         }; 
+        log_msg('you lost this round', 'grey');
       }
       break;
     }

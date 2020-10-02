@@ -291,11 +291,6 @@ const mapDispatchToProps = (dispatch) => {
         type: 'doubleBet',
       });
     },
-    lost: () => {
-      dispatch({
-        type: 'lost',
-      });
-    },
     newGame: () => {
       dispatch({
         type: 'newGame',

@@ -161,3 +161,18 @@ body {
   font-family: Futura, serif; 
   font-size: 2vmin;
 }
+
+.GameCanvas{
+  /* display: flex; */
+  /* flex-direction: row; */
+  /* justify-content: left; */
+  /* align-items: center; */
+  /* padding: 2vmin; */
+  height: 50vmin;
+  width: 100vmin;
+  background: green;
+}
+
+.HiddenImage{
+  display: none;
+}

@@ -1,11 +1,13 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import './index.css';
+import deckImage from './deck.png';
+
 
 function numToCard(n){
   const values = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
-  const suits = ['❤', '♠', '♦','♣'];
-  const color = ['red', 'black', 'red', 'black'];
+  const suits = ['❤', '♦', '♠', '♣'];
+  const color = ['red', 'red', 'black', 'black'];
   const card = {
     value: n,
     text: values[n%13],
@@ -101,6 +103,57 @@ function Bets(props){
 }
 
 class Game extends React.Component {
+  constructor(props){
+    super(props);
+
+    this.ref = React.createRef();
+    // this.draw_card.bind(this.props);
+    this.componentDidUpdate.bind(this.props.index);
+    this.componentDidMount.bind(this.props.index);
+  }
+
+  componentDidMount(){
+    const cards = this.props.cards;
+    const index = this.props.index;
+    for(let i=0; i< index; i++){
+      this.draw_card(cards[i], i*10, 0);
+    }
+  }
+
+  componentDidUpdate(){
+    this.clearCanvas();
+    const cards = this.props.cards;
+    const index = this.props.index;
+    for(let i=0; i<= index; i++){
+      this.draw_card(cards[i], i*10, 0);
+    }
+  }
+
+  clearCanvas(){
+    let ctx = this.refs.ref.getContext('2d');
+    ctx.clearRect(0, 0, this.refs.ref.width, this.refs.ref.height);
+  }
+
+  draw_card(CardNumber, DestinationX, DestinationY) {
+    let ctx = this.refs.ref.getContext('2d');
+
+    // size of 1 card in image at this time: 64*96
+    let SourceX = (CardNumber % 13) * 64;
+    let SourceY = Math.floor(CardNumber / 13) * 96;
+
+    ctx.drawImage(
+      this.refs.deckImg,
+      SourceX,
+      SourceY,
+      64,
+      96,
+      DestinationX,
+      DestinationY,
+      64,
+      96
+    );
+  }
+
   deckClick(high){
     if(this.props.index >= 51){
       console.log('deck is empy');
@@ -114,6 +167,7 @@ class Game extends React.Component {
     this.props.setGlow(outcome);
     setTimeout(()=>{this.props.updateBank(outcome)}, outcome ? 0 : 2000);
   }
+
 
   render(){
     return (
@@ -133,6 +187,16 @@ class Game extends React.Component {
             reset = { () => this.props.reset() }
           />
         </div>
+        <canvas 
+          ref='ref'
+          className='GameCanvas'
+        />
+        <img
+          ref="deckImg"
+          className="HiddenImage"
+          src={deckImage}
+          alt="deck"
+        />
       </div>
     );
   }

@@ -1,7 +1,8 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import './index.css';
-import deckImage from './deck.png';
+import './Game.css';
+import {mapDispatchToProps, mapStateToProps} from './Connector';
+import deckImage from '../images/deck.png';
 
 export function log_msg(msg, color){
     var logd = document.getElementById('logger-div');
@@ -12,6 +13,15 @@ export function log_msg(msg, color){
     logd.style.opacity = 1;
     if(color === 'black') return;
     setTimeout(() => { logd.style.opacity = 0; }, 2000);
+}
+
+export function getShuffled(){
+  var a = [...Array(52).keys()];
+  for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
 }
 
 function numToCard(n){
@@ -25,15 +35,6 @@ function numToCard(n){
     color: color[Math.floor(n/13)],
   };
   return card;
-}
-
-export function getShuffled(){
-  var a = [...Array(52).keys()];
-  for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
 }
 
 function TurnedCard(props){
@@ -71,10 +72,12 @@ function LastTurned(props){
 }
 
 function Deck(props){
+  const up = '👆'; //make compiler happy
+  const down = '👇';
   return(
     <div className='deck'>
-      <div className='bet' onClick={()=>props.onClick(true)}> <p className='bet-p'>👆</p> </div>
-      <div className='bet' onClick={()=>props.onClick(false)}> <p className='bet-p'>👇</p> </div>
+      <div className='bet' onClick={()=>props.onClick(true)}> <p className='bet-p'>{up}</p> </div>
+      <div className='bet' onClick={()=>props.onClick(false)}> <p className='bet-p'>{down}</p> </div>
     </div>
   );
 }
@@ -152,29 +155,30 @@ class GameCanvas extends React.Component {
     this.draw_cards();
   }
 
-  draw_cards(){
-    const cards = this.props.cards;
-    const index = this.props.index;
-    for(let i=0; i<= index; i++){
-      const y = (i > 0) ? (this.props.guesses[i-1] ? 0 : 10) : 0; 
-      this.draw_card(cards[i], i*12, y);
-    }
-  }
-
   clearCanvas(){
-    let ctx = this.refs.ref.getContext('2d');
+    const ctx = this.refs.ref.getContext('2d');
     ctx.clearRect(0, 0, this.refs.ref.width, this.refs.ref.height);
   }
 
+  draw_cards(){
+    for(let i=0; i<= this.props.index; i++){
+      this.draw_card(
+        this.props.cards[i], 
+        i*12, 
+        (i > 0) ? (this.props.guesses[i-1] ? 0 : 10) : 0
+      );
+    }
+  }
+
   draw_card(CardNumber, DestinationX, DestinationY) {
-    let ctx = this.refs.ref.getContext('2d');
+    const ctx = this.refs.ref.getContext('2d');
 
     const sWidth = 64;
     const sHeight = 96;
     const wScale = 1;
     const hScale = 1.5;
-    let sx = (CardNumber % 13) * sWidth;
-    let sy = Math.floor(CardNumber / 13) * sHeight;
+    const sx = (CardNumber % 13) * sWidth;
+    const sy = Math.floor(CardNumber / 13) * sHeight;
 
     ctx.drawImage(
       this.refs.deckImg,
@@ -226,7 +230,6 @@ class Game extends React.Component {
     this.props.updateBank(outcome);
   }
 
-
   render(){
     return (
       <div className='game'>
@@ -262,64 +265,5 @@ class Game extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    index: state.index,
-    cards: state.cards,
-    bet: state.bet,
-    total: state.total,
-    outcome: state.outcome,
-    inGameMoney: state.inGameMoney,
-    guesses: state.guesses,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    reset: () => {
-      dispatch({
-        type: 'reset',
-      });
-    },
-    collect: () => {
-      dispatch({
-        type: 'collect',
-      });
-    },
-    doubleBet: () => {
-      dispatch({
-        type: 'doubleBet',
-      });
-    },
-    newGame: () => {
-      dispatch({
-        type: 'newGame',
-      });
-    },
-    decBet: () => {
-      dispatch({
-        type: 'decBet',
-      });
-    },
-    incBet: () => {
-      dispatch({
-        type: 'incBet',
-      });
-    },
-    setGlow: (outcome, guess) => {
-      dispatch({
-        type: 'setGlow',
-        outcome: outcome,
-        guess: guess,
-      });
-    },
-    updateBank: (outcome) => {
-      dispatch({
-        type: 'updateBank',
-        outcome: outcome,
-      });
-    },
-  };
-};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);

@@ -10,24 +10,69 @@ import {PersistGate} from 'redux-persist/integration/react';
 
 const reducer = (state = 
   {
-    index: 0,
+    index: -1,
     cards: getShuffled(),
     bet: 10,
     total: 90,
     outcome: '',
   }, action) => {
   switch(action.type){
-    case 'reset':
+    case 'reset': {
       state = {
         ...state,
-        index: 0,
+        index: -1,
         cards: getShuffled(),
         bet: 10,
         total: 90,
         outcome: '',
+        inGameMoney: 0,
       };
       break;
-    case 'decBet':
+    }
+    case 'collect': {
+      if(state.inGameMoney === 0){
+        console.log('you have nothing to collect!');
+        break;
+      }
+      const total = state.total + state.inGameMoney;
+      state = {
+        ...state,
+        total: total,
+        inGameMoney: 0,
+      };
+      break;
+    }
+    case 'doubleBet': {
+      state = {
+        ...state,
+        inGameMoney: state.inGameMoney * 2,
+      };
+      break;
+    }
+    case 'lost': {
+      state = {
+        ...state,
+        inGameMoney: 0,
+      };
+      break;
+    }
+    case 'newGame': {
+      const inGameMoney = state.bet;
+      if(inGameMoney === 0){
+        console.log('you need to bet something');
+        break;
+      }
+      state = {
+        ...state,
+        index: 0,
+        cards: getShuffled(),
+        inGameMoney: inGameMoney,
+        outcome: '',
+        bet: 0,
+      };
+      break;
+    }
+    case 'decBet': {
       if(state.bet <= 10) break;
       state = {
         ...state,
@@ -35,7 +80,8 @@ const reducer = (state =
         total: state.total - 5,
       }; 
       break;
-    case 'incBet':
+    }
+    case 'incBet': {
       const inc = state.total < 5 ? state.total : 5;
       state = {
         ...state,
@@ -43,44 +89,30 @@ const reducer = (state =
         total: state.total - inc,
       }; 
       break;
-    case 'setGlow':
+    }
+    case 'setGlow': {
       state = {
         ...state,
         index: state.index + 1,
         outcome: action.outcome ? 'green-glow' : 'red-glow',
       }; 
       break;
-    case 'updateBank':
+    }
+    case 'updateBank': {
       if(action.outcome){
         state = {
           ...state,
-          total: state.total + state.bet,
+          inGameMoney: state.inGameMoney * 2,
         }; 
       }
       else{
-        var bet = state.bet;
-        var total = state.total;
-        if(total >= 2*bet){
-          total -= bet;
-        }
-        else if(total < 10){
-          console.log('minimum bet is 10');
-          bet = 0;
-        }
-        else{
-          total -= 10;
-          bet = 10;
-        }
         state = {
           ...state,
-          index: 0,
-          cards: getShuffled(),
-          outcome: '',
-          bet: bet,
-          total: total,
+          inGameMoney: 0,
         }; 
       }
       break;
+    }
     default: ;
   }
   return state;

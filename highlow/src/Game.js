@@ -69,6 +69,12 @@ function Cards(props){
   for(let i = 0; i<index; i++){
     turnedCards.push(<TurnedCard key = {i} value= { cards[i] } />);
   }
+  const lastTurned = index < 0 ? 
+    null : 
+    (<LastTurned 
+      value = { cards[index] } 
+      outcome = { props.outcome } 
+    />);
 
   return (
     <div className='cards'>
@@ -76,56 +82,60 @@ function Cards(props){
         onClick={(high)=>props.onClick(high)}
       />
       { turnedCards }
-      <LastTurned 
-        value = { cards[index] } 
-        outcome = { props.outcome }
-      />
+      { lastTurned }
+      <div className='vbox'>
+        <p className='bet-p'> { props.inGameMoney } </p>
+        <div className='btn' onClick={()=>props.collect()}>
+          <p className='bet-p'> collect </p>
+        </div>
+      </div>
     </div>
   );
 }
 
-function Bets(props){
-  return (
-    <div className='bets'>
+function Controls(props){
+  return(
+    <div className='vbox'>
+      <div className='hbox'>
+        <div className='btn' onClick={()=>props.newGame()}> 
+          <p className='bet-p'> new game </p>
+        </div>
+        <p className='bet-p'> bet: { props.bet } </p>
+        <div className='btn' onClick={()=>props.incBet()}> 
+          <p className='bet-p'> + </p>
+        </div>
+        <div className='btn' onClick={()=>props.decBet()}> 
+          <p className='bet-p'> - </p>
+        </div>
+        <p className='bet-p'> total: { props.total } 💰</p>
+      </div>
       <div className='btn' onClick={()=>props.reset()}>
         <p className='bet-p'> reset </p>
       </div>
-      <div className='hbox'>
-        <p className='bet-p'> bet: { props.bet } </p>
-        <div className='btn' onClick={()=>props.incBet()}> <p className='bet-p'> + </p></div>
-        <div className='btn' onClick={()=>props.decBet()}> <p className='bet-p'> - </p></div>
-      </div>
-      <div className='hbox'>
-        <p className='bet-p'> total: { props.total } 💰</p>
-      </div>
     </div>
-  );
+  )
 }
 
-class Game extends React.Component {
+class GameCanvas extends React.Component {
   constructor(props){
     super(props);
-
     this.ref = React.createRef();
-    // this.draw_card.bind(this.props);
-    this.componentDidUpdate.bind(this.props.index);
-    this.componentDidMount.bind(this.props.index);
   }
 
   componentDidMount(){
-    const cards = this.props.cards;
-    const index = this.props.index;
-    for(let i=0; i< index; i++){
-      this.draw_card(cards[i], i*10, 0);
-    }
+    this.draw_cards();
   }
 
   componentDidUpdate(){
     this.clearCanvas();
+    this.draw_cards();
+  }
+
+  draw_cards(){
     const cards = this.props.cards;
     const index = this.props.index;
     for(let i=0; i<= index; i++){
-      this.draw_card(cards[i], i*10, 0);
+      this.draw_card(cards[i], i*12, 0);
     }
   }
 
@@ -137,56 +147,29 @@ class Game extends React.Component {
   draw_card(CardNumber, DestinationX, DestinationY) {
     let ctx = this.refs.ref.getContext('2d');
 
-    // size of 1 card in image at this time: 64*96
-    let SourceX = (CardNumber % 13) * 64;
-    let SourceY = Math.floor(CardNumber / 13) * 96;
+    const sWidth = 64;
+    const sHeight = 96;
+    const wScale = 1;
+    const hScale = 1.5;
+    let sx = (CardNumber % 13) * sWidth;
+    let sy = Math.floor(CardNumber / 13) * sHeight;
 
     ctx.drawImage(
       this.refs.deckImg,
-      SourceX,
-      SourceY,
-      64,
-      96,
+      sx,
+      sy,
+      sWidth,
+      sHeight,
       DestinationX,
       DestinationY,
-      64,
-      96
+      sWidth*wScale,
+      sHeight*hScale,
     );
   }
-
-  deckClick(high){
-    if(this.props.index >= 51){
-      console.log('deck is empy');
-      return;
-    }
-    const decider = (previous, current) => current !== previous && (current > previous) === high;
-    const pCard = this.props.cards[this.props.index] % 13;
-    const cCard = this.props.cards[this.props.index+1] % 13;
-
-    const outcome = decider(pCard, cCard);
-    this.props.setGlow(outcome);
-    setTimeout(()=>{this.props.updateBank(outcome)}, outcome ? 0 : 2000);
-  }
-
-
+  
   render(){
     return (
-      <div className='game'>
-        <div className='vbox'>
-          <Cards 
-            index = { this.props.index }
-            cards = { this.props.cards }
-            outcome = { this.props.outcome }
-            onClick={ (high) => this.deckClick(high) }
-          />
-          <Bets 
-            bet = { this.props.bet }
-            total = { this.props.total }
-            incBet = { () => this.props.incBet() }
-            decBet = { () => this.props.decBet() }
-            reset = { () => this.props.reset() }
-          />
-        </div>
+      <div className='vbox'>
         <canvas 
           ref='ref'
           className='GameCanvas'
@@ -202,6 +185,58 @@ class Game extends React.Component {
   }
 }
 
+class Game extends React.Component {
+
+
+  deckClick(high){
+    if(this.props.inGameMoney === 0){
+      console.log('you need to bet something');
+      return;
+    }
+    if(this.props.index >= 51){
+      console.log('deck is empy');
+      return;
+    }
+    const decider = (previous, current) => current !== previous && (current > previous) === high;
+    const pCard = this.props.cards[this.props.index] % 13;
+    const cCard = this.props.cards[this.props.index+1] % 13;
+
+    const outcome = decider(pCard, cCard);
+    this.props.setGlow(outcome);
+    this.props.updateBank(outcome);
+  }
+
+
+  render(){
+    return (
+      <div className='game'>
+        <div className='vbox'>
+          <Cards 
+            index = { this.props.index }
+            cards = { this.props.cards }
+            outcome = { this.props.outcome }
+            onClick = { (high) => this.deckClick(high) }
+            collect = { () => this.props.collect() }
+            inGameMoney = { this.props.inGameMoney }
+          />
+        </div>
+        <GameCanvas
+          index = { this.props.index }
+          cards = { this.props.cards }
+        />
+        <Controls
+          bet = { this.props.bet }
+          total = { this.props.total }
+          incBet = { () => this.props.incBet() }
+          decBet = { () => this.props.decBet() }
+          reset = { () => this.props.reset() }
+          newGame = { () => this.props.newGame() }
+        />
+      </div>
+    );
+  }
+}
+
 
 const mapStateToProps = (state) => {
   return {
@@ -210,6 +245,7 @@ const mapStateToProps = (state) => {
     bet: state.bet,
     total: state.total,
     outcome: state.outcome,
+    inGameMoney: state.inGameMoney,
   };
 };
 
@@ -218,6 +254,26 @@ const mapDispatchToProps = (dispatch) => {
     reset: () => {
       dispatch({
         type: 'reset',
+      });
+    },
+    collect: () => {
+      dispatch({
+        type: 'collect',
+      });
+    },
+    doubleBet: () => {
+      dispatch({
+        type: 'doubleBet',
+      });
+    },
+    lost: () => {
+      dispatch({
+        type: 'lost',
+      });
+    },
+    newGame: () => {
+      dispatch({
+        type: 'newGame',
       });
     },
     decBet: () => {

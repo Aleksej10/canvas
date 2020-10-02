@@ -106,13 +106,13 @@ body {
   padding: 2vmin;
 }
 
-.bets{
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 2vmin;
-}
+/* .bets{ */
+/*   display: flex; */
+/*   flex-direction: row; */
+/*   justify-content: space-between; */
+/*   align-items: center; */
+/*   padding: 2vmin; */
+/* } */
 
 .hbox{
   display: flex;
@@ -124,7 +124,7 @@ body {
 .vbox{
   display: flex;
   flex-direction: column !important;
-  align-items: left;
+  align-items: center;
 }
 
 .game{
@@ -163,13 +163,11 @@ body {
 }
 
 .GameCanvas{
-  /* display: flex; */
-  /* flex-direction: row; */
-  /* justify-content: left; */
-  /* align-items: center; */
-  /* padding: 2vmin; */
-  height: 50vmin;
-  width: 100vmin;
+  display: flex;
+  height: 30vmin;
+  width: 88vmin;
+  padding: 3vmin 3vmin;
+  margin: 3vmin 3vmin;
   background: green;
 }
 
